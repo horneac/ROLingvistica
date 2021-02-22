@@ -1,7 +1,6 @@
 package com.rolingvistica.backend.repository;
 
 import com.rolingvistica.backend.model.Answer;
-import org.apache.catalina.LifecycleState;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

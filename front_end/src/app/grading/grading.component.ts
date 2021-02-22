@@ -1,4 +1,6 @@
-import { ProblemService } from './../problem.service';
+import { RequirementService } from './../../../build/openapi/api/requirement.service';
+import { AnswerService } from './../../../build/openapi/api/answer.service';
+import { ProblemService } from './../../../build/openapi/api/problem.service';
 import { Component, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
@@ -54,32 +56,10 @@ export class GradingComponent implements OnInit {
   nrOfAnswers: number = 0;
 
   ngOnInit(): void {
-    this.problemService.getProblems().subscribe((data: any) => {
-      this.dataSource.data = this._createTree(data);
-      
-    })
+    this.problemService.listProblemsGroupedBySectionAndContest().subscribe( data =>
+      this.dataSource.data = data)
   }
 
-  private _createTree(data:Problem[]): ProblemContestNode[] {
-    var contests: ProblemContestNode[] = [];
-    data.forEach(function(item) {
-      //debugger;
-      var problemNode: ProblemContestNode = {name: item.name, id: item.id};
-      var contestNode = contests.find(x => x.name == item.contestName);
-      if(contestNode === undefined){
-        contestNode = {name:item.contestName, children: []};
-        contests.push(contestNode);
-      }
-      var sectionNode = contestNode.children?.find(x => x.name == item.sectionName);
-      if(sectionNode === undefined) {
-        sectionNode = {name: item.sectionName, children: []};
-        contestNode.children?.push(sectionNode);
-      }
-      sectionNode.children?.push(problemNode);
-});
-    console.log(contests);
-    return contests;
-  }
   private _transformer = (node: ProblemContestNode, level: number) => {
     return {
       expandable: !!node.children && node.children.length > 0,
@@ -97,8 +77,11 @@ export class GradingComponent implements OnInit {
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-  constructor(private problemService:ProblemService) {
-    //this.dataSource.data = this.treeData;
+  constructor(
+    private readonly problemService: ProblemService,
+    private readonly answerService: AnswerService,
+    private readonly requirementService: RequirementService) {
+    
   }
 
   hasChild = (_: number, node: FlatNode) => node.expandable;
@@ -106,11 +89,11 @@ export class GradingComponent implements OnInit {
   openProblem(id: number, nodeName: string) {
     this.problemOpen = true;
     this.problemData = nodeName;
-    this.problemService.getRequirements(id).subscribe( (data: any) => this.requirements = data);
+    this.requirementService.getRequirementsByProblemId(id).subscribe( (data: any) => this.requirements = data);
   }
 
   toggleRequirement(selectedRequirement: Requirement){
-    this.problemService.getAnswers(selectedRequirement.id).subscribe( (answers: any) => {
+    this.answerService.getAnswersByRequirementId(selectedRequirement.id).subscribe( (answers: any) => {
       this.answers = answers;
       this.currentAnswer =answers[0]; 
       this.currentAnswerIndex = 0;

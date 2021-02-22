@@ -15,6 +15,7 @@ import { GradingComponent } from './grading/grading.component';
 import { MatTreeModule } from '@angular/material/tree';
 import { HttpClientModule } from '@angular/common/http';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { ApiModule } from './../../build/openapi/api.module';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatCardModule,
     MatTreeModule,
     HttpClientModule,
-    MatExpansionModule
+    MatExpansionModule,
+    ApiModule
   ],
   providers: [],
   bootstrap: [AppComponent]
