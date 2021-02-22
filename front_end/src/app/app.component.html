@@ -1,0 +1,34 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button mat-button [routerLink]="'/home'" routerLinkActive="active">
+      <h1>ROLingvistica</h1>
+    </button>
+    <span class="menu-spacer"></span>
+    <div>
+      <button mat-button [routerLink]="'/grading'" routerLinkActive="active">
+        Evaluare
+      </button>
+      <button mat-button [routerLink]="'/contacts'" routerLinkActive="active">
+        Contacts
+      </button>
+      <button
+        mat-button
+        [routerLink]="'/create-contact'"
+        routerLinkActive="active"
+      >
+        Create Contact
+      </button>
+      <button mat-button [routerLink]="'/activities'" routerLinkActive="active">
+        Activities
+      </button>
+      <button
+        mat-button
+        [routerLink]="'/create-activity'"
+        routerLinkActive="active"
+      >
+        Create Activity
+      </button>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+<router-outlet></router-outlet>

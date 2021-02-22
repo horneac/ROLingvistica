@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: ROLingvistica API
+  description: This is a public API used for the Romanian linguistics website
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+    description: backendu
+
+paths:
+  /problems:
+    get:
+      summary: returns all the problems grouped by section and contests
+      description:
+      response:
+        '200':
+          description: A JSON
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type:
+                    $ref: '#components/schemas/ProblemDTO'
+
+components:
+  schemas:
+    ProblemDTO:
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        contest_name:
+          type: string
+        section_name:
+          type: string

@@ -1,0 +1,96 @@
+<div class="row">
+  <mat-card class="contents-tree">
+    <mat-tree
+      [dataSource]="dataSource"
+      [treeControl]="treeControl"
+      style="background-color: inherit"
+    >
+      <!-- This is the tree node template for leaf nodes -->
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        <!-- use a disabled button to provide padding for tree leaf -->
+        <button mat-icon-button disabled></button>
+        <button mat-button (click)="openProblem(node.id, node.name)">
+          {{ node.name }}
+        </button>
+      </mat-tree-node>
+      <!-- This is the tree node template for expandable nodes -->
+      <mat-tree-node
+        *matTreeNodeDef="let node; when: hasChild"
+        matTreeNodePadding
+      >
+        <button
+          mat-icon-button
+          matTreeNodeToggle
+          [attr.aria-label]="'Toggle ' + node.name"
+        >
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}
+          </mat-icon>
+          <span>{{ node.name }}</span>
+        </button>
+      </mat-tree-node>
+    </mat-tree>
+  </mat-card>
+  <mat-card class="problem-card">
+    <mat-accordion style="width: 100%">
+      <mat-expansion-panel hideToggle *ngFor="let requirement of requirements">
+        <mat-expansion-panel-header (click)="toggleRequirement(requirement)">
+          <mat-panel-title>
+            {{ requirement.specification }}
+          </mat-panel-title>
+          <mat-panel-description>
+            <p>Raspunsul corect: {{ requirement.correct_answer }}</p>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        {{ currentAnswer?.providedAnswer }}
+        <mat-action-row>
+          <button mat-button (click)="loadPreviousAnswer()">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{ "chevron_left" }}
+            </mat-icon>
+          </button>
+          {{ currentAnswerIndex + "/" + nrOfAnswers }}
+          <button mat-button (click)="loadNextAnswer()">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{ "chevron_right" }}
+            </mat-icon>
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <!-- <div class="requirement-card">
+      <mat-card
+        *ngFor="let requirement of requirements"
+        class="requirement-card"
+        style="margin: 1em"
+      >
+        <mat-card-header
+          (click)="toggleRequirement(requirement)"
+          style="cursor: pointer"
+        >
+          <mat-card-title>
+            {{ requirement.specification }}
+          </mat-card-title>
+        </mat-card-header>
+        <div *ngIf="requirement.expanded">
+          <mat-card-content>
+            {{ currentAnswer?.providedAnswer }}
+          </mat-card-content>
+          <mat-card-actions style="align-items: flex-end">
+            <button mat-button (click)="loadPreviousAnswer()">
+              <mat-icon class="mat-icon-rtl-mirror">
+                {{ "chevron_left" }}
+              </mat-icon>
+            </button>
+            {{ currentAnswerIndex + "/" + nrOfAnswers }}
+            <button mat-button (click)="loadNextAnswer()">
+              <mat-icon class="mat-icon-rtl-mirror">
+                {{ "chevron_right" }}
+              </mat-icon>
+            </button>
+          </mat-card-actions>
+        </div>
+      </mat-card>
+    </div> -->
+  </mat-card>
+</div>

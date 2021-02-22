@@ -1,0 +1,26 @@
+.contents-tree {
+  width: 20%;
+  height: 100%;
+  margin-right: 2em;
+  background-color: #fefffe;
+}
+
+.row {
+  display: flex;
+  height: 90%;
+  justify-content: space-between;
+  margin: 2em;
+}
+
+.problem-card {
+  display: flex;
+  flex-grow: 1;
+  background-color: #fefffe;
+}
+
+.requirement-panel {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex-grow: 1;
+}
