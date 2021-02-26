@@ -1,3 +1,4 @@
+import { GroupedAnswerDTO } from './../../../build/openapi/model/groupedAnswerDTO';
 import { RequirementService } from './../../../build/openapi/api/requirement.service';
 import { AnswerService } from './../../../build/openapi/api/answer.service';
 import { ProblemService } from './../../../build/openapi/api/problem.service';
@@ -26,12 +27,6 @@ interface Requirement {
   expanded?: boolean;
 }
 
-interface Answer {
-  id: number;
-  providedAnswer: string;
-}
-
-
 interface FlatNode {
   expandable: boolean;
   name: string;
@@ -50,10 +45,10 @@ export class GradingComponent implements OnInit {
   problemOpen = false;
   problemData = "";
   requirements: Requirement[] = [];
-  answers: Answer[] = [];
-  currentAnswer?: Answer = undefined;
+  answers: GroupedAnswerDTO[] = [];
+  currentAnswer?: GroupedAnswerDTO = undefined;
   currentAnswerIndex: number = 0;
-  nrOfAnswers: number = 0;
+  totalNrOfAnswers: number = 0;
 
   ngOnInit(): void {
     this.problemService.listProblemsGroupedBySectionAndContest().subscribe( data =>
@@ -93,30 +88,27 @@ export class GradingComponent implements OnInit {
   }
 
   toggleRequirement(selectedRequirement: Requirement){
-    this.answerService.getAnswersByRequirementId(selectedRequirement.id).subscribe( (answers: any) => {
-      this.answers = answers;
-      this.currentAnswer =answers[0]; 
-      this.currentAnswerIndex = 0;
-      this.nrOfAnswers = answers.length;
-    });
-    this.requirements.forEach( requirement => {
-      if( requirement === selectedRequirement ) {
-        selectedRequirement.expanded = !selectedRequirement.expanded;
-      } else {
-        requirement.expanded = false;
-      }
-    })
+    this.answerService.getAnswersByRequirementIdGroupedByProvidedAnswer(selectedRequirement.id)
+      .subscribe( (answers: GroupedAnswerDTO[]) => {
+        this.answers = answers;
+        this.currentAnswer = answers[0];
+        this.currentAnswerIndex = 0;
 
+        this.totalNrOfAnswers = 0;
+        answers.forEach((element: GroupedAnswerDTO) => {
+          this.totalNrOfAnswers += element.nrOfAnswers;
+        });
+    })
   }
 
   loadNextAnswer(){
-    this.currentAnswerIndex = (this.currentAnswerIndex + 1) %  this.nrOfAnswers;
+    this.currentAnswerIndex = (this.currentAnswerIndex + 1) %  this.answers.length;
     this.currentAnswer = this.answers[this.currentAnswerIndex];
   }
 
   loadPreviousAnswer() {
     if(this.currentAnswerIndex == 0){
-      this.currentAnswerIndex = this.nrOfAnswers-1;
+      this.currentAnswerIndex = this.answers.length-1;
     } else {
       this.currentAnswerIndex--;
     }

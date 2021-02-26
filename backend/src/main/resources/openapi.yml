@@ -92,11 +92,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AnswerDTO'
-
+  /answer/{requirementId}/grouped:
+    get:
+      tags:
+        - "answer"
+      operationId: GetAnswersByRequirementIdGroupedByProvidedAnswer
+      summary: Fetch a List of unique answers for a requirement.
+      parameters:
+        - in: path
+          name: requirementId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: The ID of the requirement to which the answers were given
+      responses:
+        '200':
+          description: List of answers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupedAnswerDTO'
 
 components:
   schemas:
     ProblemDTO:
+      description: An object containing info about a problem given at a certain contest under a give section
       properties:
         id:
           type: integer
@@ -110,6 +133,7 @@ components:
       required:
         - name
     SectionProblemsDTO:
+      description: An object containing a section and the list of problems given at that section
       properties:
         name:
           type: string
@@ -122,6 +146,7 @@ components:
       required:
         - name
     ContestProblemsDTO:
+      description: An object containing a contest and all the sections from that contest, including the problems for each section
       properties:
         name:
           type: string
@@ -134,6 +159,7 @@ components:
       required:
         - name
     RequirementDTO:
+      description: An object containing basic info about a requirement.
       properties:
         id:
           type: integer
@@ -145,6 +171,7 @@ components:
           type: string
           description: The correct answer expected for this requirement.
     AnswerDTO:
+      description: An object containing basic info about an answer.
       properties:
         id:
           type: integer
@@ -156,3 +183,19 @@ components:
         providedAnswer:
           type: string
           description: The answer provided by the contestant for the requirement
+    GroupedAnswerDTO:
+      description: An object representing all the answers with the same providedAnswer to a given requirement.
+      properties:
+        providedAnswer:
+          type: string
+        requirementId:
+          type: integer
+          format: int64
+          description: The requirement for which all these answers were given.
+        nrOfAnswers:
+          type: integer
+          format: int32
+      required:
+        - providedAnswer
+        - requirementId
+        - nrOfAnswers

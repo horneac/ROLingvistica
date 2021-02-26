@@ -111,7 +111,7 @@
 								ApiUtil.java
 							</supportingFilesToGenerate>
 							<configOptions>
-								<additionalModelTypeAnnotations>@ApiModel</additionalModelTypeAnnotations>
+								<!--<additionalModelTypeAnnotations>@ApiModel</additionalModelTypeAnnotations>-->
 								<delegatePattern>false</delegatePattern>
 								<useTags>true</useTags>
 								<basePackage>io.rolingvistica.api</basePackage>
