@@ -24,3 +24,8 @@
   flex-direction: column;
   flex-grow: 1;
 }
+
+.grading-action-row {
+  display: flex;
+  justify-content: space-around;
+}

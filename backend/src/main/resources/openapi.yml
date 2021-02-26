@@ -2,7 +2,7 @@ openapi: 3.0.2
 info:
   title: ROLingvistica API
   description: This is a public API used for the Romanian linguistics website
-  version: 0.0.1
+  version: 0.0.2
 servers:
   - url: http://localhost:8080
     description: backendu
@@ -13,6 +13,8 @@ tags:
     description: Operations related to requirements
   - name: answers
     description: Operations related to answers
+  - name: partialScoreElements
+    description: Operations used for grading
 
 paths:
   /problem:
@@ -115,6 +117,29 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GroupedAnswerDTO'
+  /grading/elements/{requirementId}:
+    get:
+      tags:
+        - "partialScoreElements"
+      operationId: getPartialScoreElementsByRequirementId
+      summary: Fetch the list of elements used to grade the given requirement
+      parameters:
+        - in: path
+          name: requirementId
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: The ID of the requirement to which the answers were given
+      responses:
+        '200':
+          description: List of partial scores per element
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PartialScoreElementDTO'
 
 components:
   schemas:
@@ -199,3 +224,17 @@ components:
         - providedAnswer
         - requirementId
         - nrOfAnswers
+    PartialScoreElementDTO:
+      description: An object representing one element that should be graded in a given answer, and the points associated to it.
+      properties:
+        description:
+          type: string
+        element:
+          type: string
+        score:
+          type: number
+          format: float
+      required:
+        - description
+        - element
+        - score

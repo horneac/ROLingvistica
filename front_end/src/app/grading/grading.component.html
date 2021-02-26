@@ -39,15 +39,27 @@
             {{ requirement.specification }}
           </mat-panel-title>
           <mat-panel-description>
-            <p>Raspunsul corect: {{ requirement.correct_answer }}</p>
+            <p>Raspunsul corect: {{ requirement.correctAnswer }}</p>
           </mat-panel-description>
         </mat-expansion-panel-header>
         {{
           currentAnswer?.providedAnswer == ""
-            ? "There is no answer"
+            ? "Nu s-a raspuns."
             : currentAnswer?.providedAnswer
         }}
-        <mat-action-row>
+        <mat-action-row class="grading-action-row">
+          <div *ngFor="let partialScoreElement of partialScoreElements">
+            <button
+              mat-button
+              (click)="togglePartialScoreElement(partialScoreElement)"
+            >
+              {{ partialScoreElement.element }}
+            </button>
+          </div>
+          <span></span>
+          <div>Score: {{ scoreForCurrentAnswer }}</div>
+          <span></span>
+          {{ currentAnswer?.nrOfAnswers + " Raspunsuri" }}
           <button mat-button (click)="loadPreviousAnswer()">
             <mat-icon class="mat-icon-rtl-mirror">
               {{ "chevron_left" }}

@@ -1,3 +1,5 @@
+import { PartialScoreElementDTO } from './../../../build/openapi/model/partialScoreElementDTO';
+import { PartialScoreElementsService } from './../../../build/openapi/api/partialScoreElements.service';
 import { GroupedAnswerDTO } from './../../../build/openapi/model/groupedAnswerDTO';
 import { RequirementService } from './../../../build/openapi/api/requirement.service';
 import { AnswerService } from './../../../build/openapi/api/answer.service';
@@ -23,7 +25,7 @@ interface Problem {
 interface Requirement {
   id: number;
   specification: string;
-  correct_answer: string;
+  correctAnswer: string;
   expanded?: boolean;
 }
 
@@ -49,6 +51,8 @@ export class GradingComponent implements OnInit {
   currentAnswer?: GroupedAnswerDTO = undefined;
   currentAnswerIndex: number = 0;
   totalNrOfAnswers: number = 0;
+  partialScoreElements: PartialScoreElementDTO[] = [];
+  scoreForCurrentAnswer: number = 0;
 
   ngOnInit(): void {
     this.problemService.listProblemsGroupedBySectionAndContest().subscribe( data =>
@@ -75,7 +79,8 @@ export class GradingComponent implements OnInit {
   constructor(
     private readonly problemService: ProblemService,
     private readonly answerService: AnswerService,
-    private readonly requirementService: RequirementService) {
+    private readonly requirementService: RequirementService,
+    private readonly partialScoreElementsService: PartialScoreElementsService) {
     
   }
 
@@ -88,12 +93,18 @@ export class GradingComponent implements OnInit {
   }
 
   toggleRequirement(selectedRequirement: Requirement){
+    this.scoreForCurrentAnswer = 0;
+    this.partialScoreElementsService.getPartialScoreElementsByRequirementId(selectedRequirement.id)
+      .subscribe( (partialScoreElements: PartialScoreElementDTO[]) => {
+        this.partialScoreElements = partialScoreElements;
+      })
+
+
     this.answerService.getAnswersByRequirementIdGroupedByProvidedAnswer(selectedRequirement.id)
       .subscribe( (answers: GroupedAnswerDTO[]) => {
         this.answers = answers;
         this.currentAnswer = answers[0];
         this.currentAnswerIndex = 0;
-
         this.totalNrOfAnswers = 0;
         answers.forEach((element: GroupedAnswerDTO) => {
           this.totalNrOfAnswers += element.nrOfAnswers;
@@ -104,6 +115,7 @@ export class GradingComponent implements OnInit {
   loadNextAnswer(){
     this.currentAnswerIndex = (this.currentAnswerIndex + 1) %  this.answers.length;
     this.currentAnswer = this.answers[this.currentAnswerIndex];
+    this.scoreForCurrentAnswer = 0;
   }
 
   loadPreviousAnswer() {
@@ -113,6 +125,12 @@ export class GradingComponent implements OnInit {
       this.currentAnswerIndex--;
     }
     this.currentAnswer = this.answers[this.currentAnswerIndex];
+    this.scoreForCurrentAnswer = 0;
   }
   
+togglePartialScoreElement(element: PartialScoreElementDTO) {
+  this.scoreForCurrentAnswer += element.score;
+  console.log(element.score);
+}
+
 }
